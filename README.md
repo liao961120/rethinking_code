@@ -10,7 +10,7 @@ The `rethinking` R package requires `rstan`, which is not easy to install and ma
 
 ## Usage
 
-The code from [`book_code_boxes.txt`](https://github.com/rmcelreath/rethinking/blob/master/book_code_boxes.txt) is split into several notebooks by chapter, which can be found in [/notebooks](./notebooks).
+The code from [`book_code_boxes.txt`](https://github.com/rmcelreath/rethinking/blob/master/book_code_boxes.txt) is split into several notebooks by chapter, which can be found in [`/notebooks`](./notebooks).
 
 You can load a notebook in this repo into Kaggle's Notebook environment by clicking `File > Load from URL` in the notebook interface (also, make sure to set the language to R on the right panel). The URL is in the form of:
 
