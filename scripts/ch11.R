@@ -1,21 +1,21 @@
 #+ Setup 
 remotes::install_github('rmcelreath/rethinking', upgrade=F)
 
-#' R code 11.1
+#' ## R code 11.1
 #+ R code 11.1
 library(rethinking)
 data(chimpanzees)
 d <- chimpanzees
 
-#' R code 11.2
+#' ## R code 11.2
 #+ R code 11.2
 d$treatment <- 1 + d$prosoc_left + 2*d$condition
 
-#' R code 11.3
+#' ## R code 11.3
 #+ R code 11.3
 xtabs( ~ treatment + prosoc_left + condition , d )
 
-#' R code 11.4
+#' ## R code 11.4
 #+ R code 11.4
 m11.1 <- quap(
     alist(
@@ -24,17 +24,17 @@ m11.1 <- quap(
         a ~ dnorm( 0 , 10 )
     ) , data=d )
 
-#' R code 11.5
+#' ## R code 11.5
 #+ R code 11.5
 set.seed(1999)
 prior <- extract.prior( m11.1 , n=1e4 )
 
-#' R code 11.6
+#' ## R code 11.6
 #+ R code 11.6
 p <- inv_logit( prior$a )
 dens( p , adj=0.1 )
 
-#' R code 11.7
+#' ## R code 11.7
 #+ R code 11.7
 m11.2 <- quap(
     alist(
@@ -47,11 +47,11 @@ set.seed(1999)
 prior <- extract.prior( m11.2 , n=1e4 )
 p <- sapply( 1:4 , function(k) inv_logit( prior$a + prior$b[,k] ) )
 
-#' R code 11.8
+#' ## R code 11.8
 #+ R code 11.8
 dens( abs( p[,1] - p[,2] ) , adj=0.1 )
 
-#' R code 11.9
+#' ## R code 11.9
 #+ R code 11.9
 m11.3 <- quap(
     alist(
@@ -65,7 +65,7 @@ prior <- extract.prior( m11.3 , n=1e4 )
 p <- sapply( 1:4 , function(k) inv_logit( prior$a + prior$b[,k] ) )
 mean( abs( p[,1] - p[,2] ) )
 
-#' R code 11.10
+#' ## R code 11.10
 #+ R code 11.10
 # trimmed data list
 dat_list <- list(
@@ -73,7 +73,7 @@ dat_list <- list(
     actor = d$actor,
     treatment = as.integer(d$treatment) )
 
-#' R code 11.11
+#' ## R code 11.11
 #+ R code 11.11
 m11.4 <- ulam(
     alist(
@@ -84,30 +84,30 @@ m11.4 <- ulam(
     ) , data=dat_list , chains=4 , log_lik=TRUE )
 precis( m11.4 , depth=2 )
 
-#' R code 11.12
+#' ## R code 11.12
 #+ R code 11.12
 post <- extract.samples(m11.4)
 p_left <- inv_logit( post$a )
 plot( precis( as.data.frame(p_left) ) , xlim=c(0,1) )
 
-#' R code 11.13
+#' ## R code 11.13
 #+ R code 11.13
 labs <- c("R/N","L/N","R/P","L/P")
 plot( precis( m11.4 , depth=2 , pars="b" ) , labels=labs )
 
-#' R code 11.14
+#' ## R code 11.14
 #+ R code 11.14
 diffs <- list(
     db13 = post$b[,1] - post$b[,3],
     db24 = post$b[,2] - post$b[,4] )
 plot( precis(diffs) )
 
-#' R code 11.15
+#' ## R code 11.15
 #+ R code 11.15
 pl <- by( d$pulled_left , list( d$actor , d$treatment ) , mean )
 pl[1,]
 
-#' R code 11.16
+#' ## R code 11.16
 #+ R code 11.16
 plot( NULL , xlim=c(1,28) , ylim=c(0,1) , xlab="" ,
     ylab="proportion left lever" , xaxt="n" , yaxt="n" )
@@ -128,19 +128,19 @@ text( 3 , pl[1,3]-yoff , "R/P" , pos=1 , cex=0.8 )
 text( 4 , pl[1,4]+yoff , "L/P" , pos=3 , cex=0.8 )
 mtext( "observed proportions\n" )
 
-#' R code 11.17
+#' ## R code 11.17
 #+ R code 11.17
 dat <- list( actor=rep(1:7,each=4) , treatment=rep(1:4,times=7) )
 p_post <- link( m11.4 , data=dat )
 p_mu <- apply( p_post , 2 , mean )
 p_ci <- apply( p_post , 2 , PI )
 
-#' R code 11.18
+#' ## R code 11.18
 #+ R code 11.18
 d$side <- d$prosoc_left + 1 # right 1, left 2
 d$cond <- d$condition + 1 # no partner 1, partner 2
 
-#' R code 11.19
+#' ## R code 11.19
 #+ R code 11.19
 dat_list2 <- list(
     pulled_left = d$pulled_left,
@@ -156,27 +156,27 @@ m11.5 <- ulam(
         bc[cond] ~ dnorm( 0 , 0.5 )
     ) , data=dat_list2 , chains=4 , log_lik=TRUE )
 
-#' R code 11.20
+#' ## R code 11.20
 #+ R code 11.20
 compare( m11.5 , m11.4 , func=PSIS )
 
-#' R code 11.21
+#' ## R code 11.21
 #+ R code 11.21
 post <- extract.samples( m11.4 , clean=FALSE )
 str(post)
 
-#' R code 11.22
+#' ## R code 11.22
 #+ R code 11.22
 m11.4_stan_code <- stancode(m11.4)
 m11.4_stan <- stan( model_code=m11.4_stan_code , data=dat_list , chains=4 )
 compare( m11.4_stan , m11.4 )
 
-#' R code 11.23
+#' ## R code 11.23
 #+ R code 11.23
 post <- extract.samples(m11.4)
 mean( exp(post$b[,4]-post$b[,2]) )
 
-#' R code 11.24
+#' ## R code 11.24
 #+ R code 11.24
 data(chimpanzees)
 d <- chimpanzees
@@ -190,7 +190,7 @@ d_aggregated <- aggregate(
     sum )
 colnames(d_aggregated)[5] <- "left_pulls"
 
-#' R code 11.25
+#' ## R code 11.25
 #+ R code 11.25
 dat <- with( d_aggregated , list(
     left_pulls = left_pulls,
@@ -207,24 +207,24 @@ m11.6 <- ulam(
         b[treatment] ~ dnorm( 0 , 0.5 )
     ) , data=dat , chains=4 , log_lik=TRUE )
 
-#' R code 11.26
+#' ## R code 11.26
 #+ R code 11.26
 compare( m11.6 , m11.4 , func=PSIS )
 
-#' R code 11.27
+#' ## R code 11.27
 #+ R code 11.27
 # deviance of aggregated 6-in-9
 -2*dbinom(6,9,0.2,log=TRUE)
 # deviance of dis-aggregated
 -2*sum(dbern(c(1,1,1,1,1,1,0,0,0),0.2,log=TRUE))
 
-#' R code 11.28
+#' ## R code 11.28
 #+ R code 11.28
 library(rethinking)
 data(UCBadmit)
 d <- UCBadmit
 
-#' R code 11.29
+#' ## R code 11.29
 #+ R code 11.29
 dat_list <- list(
     admit = d$admit,
@@ -239,14 +239,14 @@ m11.7 <- ulam(
     ) , data=dat_list , chains=4 )
 precis( m11.7 , depth=2 )
 
-#' R code 11.30
+#' ## R code 11.30
 #+ R code 11.30
 post <- extract.samples(m11.7)
 diff_a <- post$a[,1] - post$a[,2]
 diff_p <- inv_logit(post$a[,1]) - inv_logit(post$a[,2])
 precis( list( diff_a=diff_a , diff_p=diff_p ) )
 
-#' R code 11.31
+#' ## R code 11.31
 #+ R code 11.31
 postcheck( m11.7 )
 # draw lines connecting points from same dept
@@ -258,7 +258,7 @@ for ( i in 1:6 ) {
     text( x+0.5 , (y1+y2)/2 + 0.05 , d$dept[x] , cex=0.8 , col=rangi2 )
 }
 
-#' R code 11.32
+#' ## R code 11.32
 #+ R code 11.32
 dat_list$dept_id <- rep(1:6,each=2)
 m11.8 <- ulam(
@@ -270,14 +270,14 @@ m11.8 <- ulam(
     ) , data=dat_list , chains=4 , iter=4000 )
 precis( m11.8 , depth=2 )
 
-#' R code 11.33
+#' ## R code 11.33
 #+ R code 11.33
 post <- extract.samples(m11.8)
 diff_a <- post$a[,1] - post$a[,2]
 diff_p <- inv_logit(post$a[,1]) - inv_logit(post$a[,2])
 precis( list( diff_a=diff_a , diff_p=diff_p ) )
 
-#' R code 11.34
+#' ## R code 11.34
 #+ R code 11.34
 pg <- with( dat_list , sapply( 1:6 , function(k)
     applications[dept_id==k]/sum(applications[dept_id==k]) ) )
@@ -285,38 +285,38 @@ rownames(pg) <- c("male","female")
 colnames(pg) <- unique(d$dept)
 round( pg , 2 )
 
-#' R code 11.35
+#' ## R code 11.35
 #+ R code 11.35
 y <- rbinom(1e5,1000,1/1000)
 c( mean(y) , var(y) )
 
-#' R code 11.36
+#' ## R code 11.36
 #+ R code 11.36
 library(rethinking)
 data(Kline)
 d <- Kline
 d
 
-#' R code 11.37
+#' ## R code 11.37
 #+ R code 11.37
 d$P <- scale( log(d$population) )
 d$contact_id <- ifelse( d$contact=="high" , 2 , 1 )
 
-#' R code 11.38
+#' ## R code 11.38
 #+ R code 11.38
 curve( dlnorm( x , 0 , 10 ) , from=0 , to=100 , n=200 )
 
-#' R code 11.39
+#' ## R code 11.39
 #+ R code 11.39
 a <- rnorm(1e4,0,10)
 lambda <- exp(a)
 mean( lambda )
 
-#' R code 11.40
+#' ## R code 11.40
 #+ R code 11.40
 curve( dlnorm( x , 3 , 0.5 ) , from=0 , to=100 , n=200 )
 
-#' R code 11.41
+#' ## R code 11.41
 #+ R code 11.41
 N <- 100
 a <- rnorm( N , 3 , 0.5 )
@@ -324,7 +324,7 @@ b <- rnorm( N , 0 , 10 )
 plot( NULL , xlim=c(-2,2) , ylim=c(0,100) )
 for ( i in 1:N ) curve( exp( a[i] + b[i]*x ) , add=TRUE , col=grau() )
 
-#' R code 11.42
+#' ## R code 11.42
 #+ R code 11.42
 set.seed(10)
 N <- 100
@@ -333,7 +333,7 @@ b <- rnorm( N , 0 , 0.2 )
 plot( NULL , xlim=c(-2,2) , ylim=c(0,100) )
 for ( i in 1:N ) curve( exp( a[i] + b[i]*x ) , add=TRUE , col=grau() )
 
-#' R code 11.43
+#' ## R code 11.43
 #+ R code 11.43
 x_seq <- seq( from=log(100) , to=log(200000) , length.out=100 )
 lambda <- sapply( x_seq , function(x) exp( a + b*x ) )
@@ -341,13 +341,13 @@ plot( NULL , xlim=range(x_seq) , ylim=c(0,500) , xlab="log population" ,
     ylab="total tools" )
 for ( i in 1:N ) lines( x_seq , lambda[i,] , col=grau() , lwd=1.5 )
 
-#' R code 11.44
+#' ## R code 11.44
 #+ R code 11.44
 plot( NULL , xlim=range(exp(x_seq)) , ylim=c(0,500) , xlab="population" ,
     ylab="total tools" )
 for ( i in 1:N ) lines( exp(x_seq) , lambda[i,] , col=grau() , lwd=1.5 )
 
-#' R code 11.45
+#' ## R code 11.45
 #+ R code 11.45
 dat <- list(
     T = d$total_tools ,
@@ -371,11 +371,11 @@ m11.10 <- ulam(
         b[cid] ~ dnorm( 0 , 0.2 )
     ), data=dat , chains=4 , log_lik=TRUE )
 
-#' R code 11.46
+#' ## R code 11.46
 #+ R code 11.46
 compare( m11.9 , m11.10 , func=PSIS )
 
-#' R code 11.47
+#' ## R code 11.47
 #+ R code 11.47
 k <- PSIS( m11.10 , pointwise=TRUE )$k
 plot( dat$P , dat$T , xlab="log population (std)" , ylab="total tools" ,
@@ -400,7 +400,7 @@ lci <- apply( lambda , 2 , PI )
 lines( P_seq , lmu , lty=1 , lwd=1.5 )
 shade( lci , P_seq , xpd=TRUE )
 
-#' R code 11.48
+#' ## R code 11.48
 #+ R code 11.48
 plot( d$population , d$total_tools , xlab="population" , ylab="total tools" ,
     col=rangi2 , pch=ifelse( dat$cid==1 , 1 , 16 ) , lwd=2 ,
@@ -424,7 +424,7 @@ lci <- apply( lambda , 2 , PI )
 lines( pop_seq , lmu , lty=1 , lwd=1.5 )
 shade( lci , pop_seq , xpd=TRUE )
 
-#' R code 11.49
+#' ## R code 11.49
 #+ R code 11.49
 dat2 <- list( T=d$total_tools, P=d$population, cid=d$contact_id )
 m11.11 <- ulam(
@@ -436,24 +436,24 @@ m11.11 <- ulam(
         g ~ dexp(1)
     ), data=dat2 , chains=4 , log_lik=TRUE )
 
-#' R code 11.50
+#' ## R code 11.50
 #+ R code 11.50
 num_days <- 30
 y <- rpois( num_days , 1.5 )
 
-#' R code 11.51
+#' ## R code 11.51
 #+ R code 11.51
 num_weeks <- 4
 y_new <- rpois( num_weeks , 0.5*7 )
 
-#' R code 11.52
+#' ## R code 11.52
 #+ R code 11.52
 y_all <- c( y , y_new )
 exposure <- c( rep(1,30) , rep(7,4) )
 monastery <- c( rep(0,30) , rep(1,4) )
 d <- data.frame( y=y_all , days=exposure , monastery=monastery )
 
-#' R code 11.53
+#' ## R code 11.53
 #+ R code 11.53
 # compute the offset
 d$log_days <- log( d$days )
@@ -467,14 +467,14 @@ m11.12 <- quap(
         b ~ dnorm( 0 , 1 )
     ), data=d )
 
-#' R code 11.54
+#' ## R code 11.54
 #+ R code 11.54
 post <- extract.samples( m11.12 )
 lambda_old <- exp( post$a )
 lambda_new <- exp( post$a + post$b )
 precis( data.frame( lambda_old , lambda_new ) )
 
-#' R code 11.55
+#' ## R code 11.55
 #+ R code 11.55
 # simulate career choices among 500 individuals
 N <- 500             # number of individuals
@@ -490,7 +490,7 @@ career <- rep(NA,N)  # empty vector of choices for each individual
 set.seed(34302)
 for ( i in 1:N ) career[i] <- sample( 1:3 , size=1 , prob=p )
 
-#' R code 11.56
+#' ## R code 11.56
 #+ R code 11.56
 code_m11.13 <- "
 data{
@@ -516,13 +516,13 @@ model{
 }
 "
 
-#' R code 11.57
+#' ## R code 11.57
 #+ R code 11.57
 dat_list <- list( N=N , K=3 , career=career , career_income=income )
 m11.13 <- stan( model_code=code_m11.13 , data=dat_list , chains=4 )
 precis( m11.13 , 2 )
 
-#' R code 11.58
+#' ## R code 11.58
 #+ R code 11.58
 post <- extract.samples( m11.13 )
 
@@ -541,7 +541,7 @@ p_new <- sapply( 1:length(post$b) , function(i)
 p_diff <- p_new[2,] - p_orig[2,]
 precis( p_diff )
 
-#' R code 11.59
+#' ## R code 11.59
 #+ R code 11.59
 N <- 500
 # simulate family incomes for each individual
@@ -584,13 +584,13 @@ dat_list <- list( N=N , K=3 , career=career , family_income=family_income )
 m11.14 <- stan( model_code=code_m11.14 , data=dat_list , chains=4 )
 precis( m11.14 , 2 )
 
-#' R code 11.60
+#' ## R code 11.60
 #+ R code 11.60
 library(rethinking)
 data(UCBadmit)
 d <- UCBadmit
 
-#' R code 11.61
+#' ## R code 11.61
 #+ R code 11.61
 # binomial model of overall admission probability
 m_binom <- quap(
@@ -612,11 +612,11 @@ m_pois <- ulam(
         c(a1,a2) ~ dnorm(0,1.5)
     ), data=dat , chains=3 , cores=3 )
 
-#' R code 11.62
+#' ## R code 11.62
 #+ R code 11.62
 inv_logit(coef(m_binom))
 
-#' R code 11.63
+#' ## R code 11.63
 #+ R code 11.63
 k <- coef(m_pois)
 a1 <- k['a1']; a2 <- k['a2']

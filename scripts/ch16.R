@@ -1,7 +1,7 @@
 #+ Setup 
 remotes::install_github('rmcelreath/rethinking', upgrade=F)
 
-#' R code 16.1
+#' ## R code 16.1
 #+ R code 16.1
 library(rethinking)
 data(Howell1)
@@ -11,7 +11,7 @@ d <- Howell1
 d$w <- d$weight / mean(d$weight)
 d$h <- d$height / mean(d$height)
 
-#' R code 16.2
+#' ## R code 16.2
 #+ R code 16.2
 m16.1 <- ulam(
     alist(
@@ -22,7 +22,7 @@ m16.1 <- ulam(
         sigma ~ exponential( 1 )
     ), data=d , chains=4 , cores=4 )
 
-#' R code 16.3
+#' ## R code 16.3
 #+ R code 16.3
 h_seq <- seq( from=0 , to=max(d$h) , length.out=30 )
 w_sim <- sim( m16.1 , data=list(h=h_seq) )
@@ -33,17 +33,17 @@ plot( d$h , d$w , xlim=c(0,max(d$h)) , ylim=c(0,max(d$w)) , col=rangi2 ,
 lines( h_seq , mu_mean )
 shade( w_CI , h_seq )
 
-#' R code 16.4
+#' ## R code 16.4
 #+ R code 16.4
 library(rethinking)
 data(Boxes)
 precis(Boxes)
 
-#' R code 16.5
+#' ## R code 16.5
 #+ R code 16.5
 table( Boxes$y ) / length( Boxes$y )
 
-#' R code 16.6
+#' ## R code 16.6
 #+ R code 16.6
 set.seed(7)
 N <- 30 # number of children
@@ -61,12 +61,12 @@ y <- sample( c(y1,y2) )
 # count the 2s
 sum(y==2)/N
 
-#' R code 16.7
+#' ## R code 16.7
 #+ R code 16.7
 data(Boxes_model)
 cat(Boxes_model)
 
-#' R code 16.8
+#' ## R code 16.8
 #+ R code 16.8
 # prep data
 dat_list <- list(
@@ -82,12 +82,12 @@ p_labels <- c("1 Majority","2 Minority","3 Maverick","4 Random",
     "5 Follow First")
 plot( precis(m16.2,2) , labels=p_labels )
 
-#' R code 16.9
+#' ## R code 16.9
 #+ R code 16.9
 library(rethinking)
 data(Panda_nuts)
 
-#' R code 16.10
+#' ## R code 16.10
 #+ R code 16.10
 N <- 1e4
 phi <- rlnorm( N , log(1) , 0.1 )
@@ -109,7 +109,7 @@ axis( 1 , at=at , labels=round(at*max(Panda_nuts$age)) )
 for ( i in 1:20 ) curve( phi[i]*(1-exp(-k[i]*x))^theta[i] , add=TRUE ,
     col=grau() , lwd=1.5 )
 
-#' R code 16.11
+#' ## R code 16.11
 #+ R code 16.11
 dat_list <- list(
     n = as.integer( Panda_nuts$nuts_opened ),
@@ -125,7 +125,7 @@ m16.4 <- ulam(
         theta ~ lognormal( log(5) , 0.25 )
     ), data=dat_list , chains=4 )
 
-#' R code 16.12
+#' ## R code 16.12
 #+ R code 16.12
 post <- extract.samples(m16.4)
 plot( NULL , xlim=c(0,1) , ylim=c(0,1.5) , xlab="age" ,
@@ -142,7 +142,7 @@ points( jitter(dat_list$age) , pts , col=rangi2 , lwd=2 , cex=point_size*3 )
 for ( i in 1:30 ) with( post ,
     curve( phi[i]*(1-exp(-k[i]*x))^theta[i] , add=TRUE , col=grau() ) )
 
-#' R code 16.13
+#' ## R code 16.13
 #+ R code 16.13
 library(rethinking)
 data(Lynx_Hare)
@@ -156,7 +156,7 @@ points( 1:21 , Lynx_Hare[,2] , bg=rangi2 , col="white" , pch=21 , cex=1.4 )
 text( 17 , 80 , "Lepus" , pos=2 )
 text( 19 , 50 , "Lynx" , pos=2 , col=rangi2 )
 
-#' R code 16.14
+#' ## R code 16.14
 #+ R code 16.14
 sim_lynx_hare <- function( n_steps , init , theta , dt=0.002 ) {
     L <- rep(NA,n_steps)
@@ -170,7 +170,7 @@ sim_lynx_hare <- function( n_steps , init , theta , dt=0.002 ) {
     return( cbind(L,H) )
 }
 
-#' R code 16.15
+#' ## R code 16.15
 #+ R code 16.15
 theta <- c( 0.5 , 0.05 , 0.025 , 0.5 )
 z <- sim_lynx_hare( 1e4 , as.numeric(Lynx_Hare[1,2:3]) , theta )
@@ -180,7 +180,7 @@ plot( z[,2] , type="l" , ylim=c(0,max(z[,2])) , lwd=2 , xaxt="n" ,
 lines( z[,1] , col=rangi2 , lwd=2 )
 mtext( "time" , 1 )
 
-#' R code 16.16
+#' ## R code 16.16
 #+ R code 16.16
 N <- 1e4
 Ht <- 1e4
@@ -189,12 +189,12 @@ h <- rbinom( N , size=Ht , prob=p )
 h <- round( h/1000 , 2 )
 dens( h , xlab="thousand of pelts" , lwd=2 )
 
-#' R code 16.17
+#' ## R code 16.17
 #+ R code 16.17
 data(Lynx_Hare_model)
 cat(Lynx_Hare_model)
 
-#' R code 16.18
+#' ## R code 16.18
 #+ R code 16.18
 dat_list <- list(
     N = nrow(Lynx_Hare),
@@ -203,7 +203,7 @@ dat_list <- list(
 m16.5 <- stan( model_code=Lynx_Hare_model , data=dat_list , chains=3 ,
     cores=3 , control=list( adapt_delta=0.95 ) )
 
-#' R code 16.19
+#' ## R code 16.19
 #+ R code 16.19
 post <- extract.samples(m16.5)
 pelts <- dat_list$pelts
@@ -221,7 +221,7 @@ for ( s in 1:21 ) {
 text( 17 , 90 , "Lepus" , pos=2 )
 text( 19 , 50 , "Lynx" , pos=2 , col=rangi2 )
 
-#' R code 16.20
+#' ## R code 16.20
 #+ R code 16.20
 plot( NULL , pch=16 , xlim=c(1,21) , ylim=c(0,500) , xlab="year" ,
     ylab="thousands of animals" , xaxt="n" )
@@ -232,7 +232,7 @@ for ( s in 1:21 ) {
     lines( 1:21 , post$pop[s,,1] , col=col.alpha(rangi2,0.4) , lwd=2 )
 }
 
-#' R code 16.21
+#' ## R code 16.21
 #+ R code 16.21
 data(Lynx_Hare)
 dat_ar1 <- list(

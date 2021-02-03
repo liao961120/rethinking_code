@@ -1,7 +1,7 @@
 #+ Setup 
 remotes::install_github('rmcelreath/rethinking', upgrade=F)
 
-#' R code 6.1
+#' ## R code 6.1
 #+ R code 6.1
 set.seed(1914)
 N <- 200 # num grant proposals
@@ -15,7 +15,7 @@ q <- quantile( s , 1-p ) # top 10% threshold
 selected <- ifelse( s >= q , TRUE , FALSE )
 cor( tw[selected] , nw[selected] )
 
-#' R code 6.2
+#' ## R code 6.2
 #+ R code 6.2
 N <- 100                          # number of individuals
 set.seed(909)
@@ -28,7 +28,7 @@ leg_right <- leg_prop*height +    # sim right leg as proportion + error
                                   # combine into data frame
 d <- data.frame(height,leg_left,leg_right)
 
-#' R code 6.3
+#' ## R code 6.3
 #+ R code 6.3
 m6.1 <- quap(
     alist(
@@ -41,21 +41,21 @@ m6.1 <- quap(
     ) , data=d )
 precis(m6.1)
 
-#' R code 6.4
+#' ## R code 6.4
 #+ R code 6.4
 plot(precis(m6.1))
 
-#' R code 6.5
+#' ## R code 6.5
 #+ R code 6.5
 post <- extract.samples(m6.1)
 plot( bl ~ br , post , col=col.alpha(rangi2,0.1) , pch=16 )
 
-#' R code 6.6
+#' ## R code 6.6
 #+ R code 6.6
 sum_blbr <- post$bl + post$br
 dens( sum_blbr , col=rangi2 , lwd=2 , xlab="sum of bl and br" )
 
-#' R code 6.7
+#' ## R code 6.7
 #+ R code 6.7
 m6.2 <- quap(
     alist(
@@ -67,7 +67,7 @@ m6.2 <- quap(
     ) , data=d )
 precis(m6.2)
 
-#' R code 6.8
+#' ## R code 6.8
 #+ R code 6.8
 library(rethinking)
 data(milk)
@@ -76,7 +76,7 @@ d$K <- standardize( d$kcal.per.g )
 d$F <- standardize( d$perc.fat )
 d$L <- standardize( d$perc.lactose )
 
-#' R code 6.9
+#' ## R code 6.9
 #+ R code 6.9
 # kcal.per.g regressed on perc.fat
 m6.3 <- quap(
@@ -101,7 +101,7 @@ m6.4 <- quap(
 precis( m6.3 )
 precis( m6.4 )
 
-#' R code 6.10
+#' ## R code 6.10
 #+ R code 6.10
 m6.5 <- quap(
     alist(
@@ -115,11 +115,11 @@ m6.5 <- quap(
     data=d )
 precis( m6.5 )
 
-#' R code 6.11
+#' ## R code 6.11
 #+ R code 6.11
 pairs( ~ kcal.per.g + perc.fat + perc.lactose , data=d , col=rangi2 )
 
-#' R code 6.12
+#' ## R code 6.12
 #+ R code 6.12
 library(rethinking)
 data(milk)
@@ -138,7 +138,7 @@ r.seq <- seq(from=0,to=0.99,by=0.01)
 stddev <- sapply( r.seq , function(z) rep.sim.coll(r=z,n=100) )
 plot( stddev ~ r.seq , type="l" , col=rangi2, lwd=2 , xlab="correlation" )
 
-#' R code 6.13
+#' ## R code 6.13
 #+ R code 6.13
 set.seed(71)
 # number of plants
@@ -156,12 +156,12 @@ h1 <- h0 + rnorm(N, 5 - 3*fungus)
 d <- data.frame( h0=h0 , h1=h1 , treatment=treatment , fungus=fungus )
 precis(d)
 
-#' R code 6.14
+#' ## R code 6.14
 #+ R code 6.14
 sim_p <- rlnorm( 1e4 , 0 , 0.25 )
 precis( data.frame(sim_p) )
 
-#' R code 6.15
+#' ## R code 6.15
 #+ R code 6.15
 m6.6 <- quap(
     alist(
@@ -172,7 +172,7 @@ m6.6 <- quap(
     ), data=d )
 precis(m6.6)
 
-#' R code 6.16
+#' ## R code 6.16
 #+ R code 6.16
 m6.7 <- quap(
     alist(
@@ -186,7 +186,7 @@ m6.7 <- quap(
     ), data=d )
 precis(m6.7)
 
-#' R code 6.17
+#' ## R code 6.17
 #+ R code 6.17
 m6.8 <- quap(
     alist(
@@ -199,7 +199,7 @@ m6.8 <- quap(
     ), data=d )
 precis(m6.8)
 
-#' R code 6.18
+#' ## R code 6.18
 #+ R code 6.18
 library(dagitty)
 plant_dag <- dagitty( "dag {
@@ -211,11 +211,11 @@ coordinates( plant_dag ) <- list( x=c(H_0=0,T=2,F=1.5,H_1=1) ,
                                   y=c(H_0=0,T=0,F=0,H_1=0) )
 drawdag( plant_dag )
 
-#' R code 6.19
+#' ## R code 6.19
 #+ R code 6.19
 impliedConditionalIndependencies(plant_dag)
 
-#' R code 6.20
+#' ## R code 6.20
 #+ R code 6.20
 set.seed(71)
 N <- 1000
@@ -226,18 +226,18 @@ fungus <- rbinom( N , size=1 , prob=0.5 - treatment*0.4 + 0.4*M )
 h1 <- h0 + rnorm( N , 5 + 3*M )
 d2 <- data.frame( h0=h0 , h1=h1 , treatment=treatment , fungus=fungus )
 
-#' R code 6.21
+#' ## R code 6.21
 #+ R code 6.21
 library(rethinking)
 d <- sim_happiness( seed=1977 , N_years=1000 )
 precis(d)
 
-#' R code 6.22
+#' ## R code 6.22
 #+ R code 6.22
 d2 <- d[ d$age>17 , ] # only adults
 d2$A <- ( d2$age - 18 ) / ( 65 - 18 )
 
-#' R code 6.23
+#' ## R code 6.23
 #+ R code 6.23
 d2$mid <- d2$married + 1
 m6.9 <- quap(
@@ -250,7 +250,7 @@ m6.9 <- quap(
     ) , data=d2 )
 precis(m6.9,depth=2)
 
-#' R code 6.24
+#' ## R code 6.24
 #+ R code 6.24
 m6.10 <- quap(
     alist(
@@ -262,7 +262,7 @@ m6.10 <- quap(
     ) , data=d2 )
 precis(m6.10)
 
-#' R code 6.25
+#' ## R code 6.25
 #+ R code 6.25
 N <- 200  # number of grandparent-parent-child triads
 b_GP <- 1 # direct effect of G on P
@@ -270,7 +270,7 @@ b_GC <- 0 # direct effect of G on C
 b_PC <- 1 # direct effect of P on C
 b_U <- 2  # direct effect of U on P and C
 
-#' R code 6.26
+#' ## R code 6.26
 #+ R code 6.26
 set.seed(1)
 U <- 2*rbern( N , 0.5 ) - 1
@@ -279,7 +279,7 @@ P <- rnorm( N , b_GP*G + b_U*U )
 C <- rnorm( N , b_PC*P + b_GC*G + b_U*U )
 d <- data.frame( C=C , P=P , G=G , U=U )
 
-#' R code 6.27
+#' ## R code 6.27
 #+ R code 6.27
 m6.11 <- quap(
     alist(
@@ -291,7 +291,7 @@ m6.11 <- quap(
     ), data=d )
 precis(m6.11)
 
-#' R code 6.28
+#' ## R code 6.28
 #+ R code 6.28
 m6.12 <- quap(
     alist(
@@ -303,7 +303,7 @@ m6.12 <- quap(
     ), data=d )
 precis(m6.12)
 
-#' R code 6.29
+#' ## R code 6.29
 #+ R code 6.29
 library(dagitty)
 dag_6.1 <- dagitty( "dag {
@@ -314,7 +314,7 @@ dag_6.1 <- dagitty( "dag {
 }")
 adjustmentSets( dag_6.1 , exposure="X" , outcome="Y" )
 
-#' R code 6.30
+#' ## R code 6.30
 #+ R code 6.30
 library(dagitty)
 dag_6.2 <- dagitty( "dag {
@@ -325,7 +325,7 @@ dag_6.2 <- dagitty( "dag {
 }")
 adjustmentSets( dag_6.2 , exposure="W" , outcome="D" )
 
-#' R code 6.31
+#' ## R code 6.31
 #+ R code 6.31
 impliedConditionalIndependencies( dag_6.2 )
 

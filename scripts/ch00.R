@@ -1,8 +1,8 @@
-#' R code 0.1
+#' ## R code 0.1
 #+ R code 0.1
 print( "All models are wrong, but some are useful." )
 
-#' R code 0.2
+#' ## R code 0.2
 #+ R code 0.2
 x <- 1:2
 x <- x*10
@@ -11,12 +11,12 @@ x <- sum(x)
 x <- exp(x)
 x
 
-#' R code 0.3
+#' ## R code 0.3
 #+ R code 0.3
 ( log( 0.01^200 ) )
 ( 200 * log(0.01) )
 
-#' R code 0.4
+#' ## R code 0.4
 #+ R code 0.4
 # Load the data:
 # car braking distances in feet paired with speeds in km/h
@@ -32,7 +32,7 @@ coef(m)
 # plot residuals against speed
 plot( resid(m) ~ speed , data=cars )
 
-#' R code 0.5
+#' ## R code 0.5
 #+ R code 0.5
 install.packages(c("coda","mvtnorm","devtools","dagitty"))
 library(devtools)

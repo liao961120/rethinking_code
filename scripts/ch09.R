@@ -1,7 +1,7 @@
 #+ Setup 
 remotes::install_github('rmcelreath/rethinking', upgrade=F)
 
-#' R code 9.1
+#' ## R code 9.1
 #+ R code 9.1
 num_weeks <- 1e5
 positions <- rep(0,num_weeks)
@@ -19,15 +19,15 @@ for ( i in 1:num_weeks ) {
     current <- ifelse( runif(1) < prob_move , proposal , current )
 }
 
-#' R code 9.2
+#' ## R code 9.2
 #+ R code 9.2
 plot( 1:100 , positions[1:100] )
 
-#' R code 9.3
+#' ## R code 9.3
 #+ R code 9.3
 plot( table( positions ) )
 
-#' R code 9.4
+#' ## R code 9.4
 #+ R code 9.4
 D <- 10
 T <- 1e3
@@ -36,7 +36,7 @@ rad_dist <- function( Y ) sqrt( sum(Y^2) )
 Rd <- sapply( 1:T , function(i) rad_dist( Y[i,] ) )
 dens( Rd )
 
-#' R code 9.5
+#' ## R code 9.5
 #+ R code 9.5
 # U needs to return neg-log-probability
 U <- function( q , a=0 , b=1 , k=0 , d=1 ) {
@@ -47,7 +47,7 @@ U <- function( q , a=0 , b=1 , k=0 , d=1 ) {
     return( -U )
 }
 
-#' R code 9.6
+#' ## R code 9.6
 #+ R code 9.6
 # gradient function
 # need vector of partial derivatives of U with respect to vector q
@@ -65,7 +65,7 @@ x <- rnorm(50)
 x <- as.numeric(scale(x))
 y <- as.numeric(scale(y))
 
-#' R code 9.7
+#' ## R code 9.7
 #+ R code 9.7
 library(shape) # for fancy arrows
 Q <- list()
@@ -93,7 +93,7 @@ for ( i in 1:n_samples ) {
         col=ifelse( abs(Q$dH)>0.1 , "red" , "black" ) )
 }
 
-#' R code 9.8
+#' ## R code 9.8
 #+ R code 9.8
 HMC2 <- function (U, grad_U, epsilon, L, current_q) {
   q = current_q
@@ -107,7 +107,7 @@ HMC2 <- function (U, grad_U, epsilon, L, current_q) {
   qtraj[1,] <- current_q
   ptraj[1,] <- p
 
-#' R code 9.9
+#' ## R code 9.9
 #+ R code 9.9
   # Alternate full steps for position and momentum
   for ( i in 1:L ) {
@@ -120,7 +120,7 @@ HMC2 <- function (U, grad_U, epsilon, L, current_q) {
     qtraj[i+1,] <- q
   }
 
-#' R code 9.10
+#' ## R code 9.10
 #+ R code 9.10
   # Make a half step for momentum at the end
   p = p - epsilon * grad_U(q) / 2
@@ -142,7 +142,7 @@ HMC2 <- function (U, grad_U, epsilon, L, current_q) {
   return(list( q=new_q, traj=qtraj, ptraj=ptraj, accept=accept ))
 }
 
-#' R code 9.11
+#' ## R code 9.11
 #+ R code 9.11
 library(rethinking)
 data(rugged)
@@ -153,7 +153,7 @@ dd$log_gdp_std <- dd$log_gdp / mean(dd$log_gdp)
 dd$rugged_std <- dd$rugged / max(dd$rugged)
 dd$cid <- ifelse( dd$cont_africa==1 , 1 , 2 )
 
-#' R code 9.12
+#' ## R code 9.12
 #+ R code 9.12
 m8.3 <- quap(
     alist(
@@ -165,7 +165,7 @@ m8.3 <- quap(
     ) , data=dd )
 precis( m8.3 , depth=2 )
 
-#' R code 9.13
+#' ## R code 9.13
 #+ R code 9.13
 dat_slim <- list(
     log_gdp_std = dd$log_gdp_std,
@@ -174,7 +174,7 @@ dat_slim <- list(
 )
 str(dat_slim)
 
-#' R code 9.14
+#' ## R code 9.14
 #+ R code 9.14
 m9.1 <- ulam(
     alist(
@@ -185,11 +185,11 @@ m9.1 <- ulam(
         sigma ~ dexp( 1 )
     ) , data=dat_slim , chains=1 )
 
-#' R code 9.15
+#' ## R code 9.15
 #+ R code 9.15
 precis( m9.1 , depth=2 )
 
-#' R code 9.16
+#' ## R code 9.16
 #+ R code 9.16
 m9.1 <- ulam(
     alist(
@@ -200,27 +200,27 @@ m9.1 <- ulam(
         sigma ~ dexp( 1 )
     ) , data=dat_slim , chains=4 , cores=4 )
 
-#' R code 9.17
+#' ## R code 9.17
 #+ R code 9.17
 show( m9.1 )
 
-#' R code 9.18
+#' ## R code 9.18
 #+ R code 9.18
 precis( m9.1 , 2 )
 
-#' R code 9.19
+#' ## R code 9.19
 #+ R code 9.19
 pairs( m9.1 )
 
-#' R code 9.20
+#' ## R code 9.20
 #+ R code 9.20
 traceplot( m9.1 )
 
-#' R code 9.21
+#' ## R code 9.21
 #+ R code 9.21
 trankplot( m9.1 )
 
-#' R code 9.22
+#' ## R code 9.22
 #+ R code 9.22
 y <- c(-1,1)
 set.seed(11)
@@ -232,11 +232,11 @@ m9.2 <- ulam(
         sigma ~ dexp( 0.0001 )
     ) , data=list(y=y) , chains=3 )
 
-#' R code 9.23
+#' ## R code 9.23
 #+ R code 9.23
 precis( m9.2 )
 
-#' R code 9.24
+#' ## R code 9.24
 #+ R code 9.24
 set.seed(11)
 m9.3 <- ulam(
@@ -248,12 +248,12 @@ m9.3 <- ulam(
     ) , data=list(y=y) , chains=3 )
 precis( m9.3 )
 
-#' R code 9.25
+#' ## R code 9.25
 #+ R code 9.25
 set.seed(41)
 y <- rnorm( 100 , mean=0 , sd=1 )
 
-#' R code 9.26
+#' ## R code 9.26
 #+ R code 9.26
 set.seed(384)
 m9.4 <- ulam(
@@ -266,7 +266,7 @@ m9.4 <- ulam(
     ) , data=list(y=y) , chains=3 )
 precis( m9.4 )
 
-#' R code 9.27
+#' ## R code 9.27
 #+ R code 9.27
 m9.5 <- ulam(
     alist(
@@ -278,7 +278,7 @@ m9.5 <- ulam(
     ) , data=list(y=y) , chains=3 )
 precis( m9.5 )
 
-#' R code 9.28
+#' ## R code 9.28
 #+ R code 9.28
 mp <- ulam(
     alist(
@@ -286,7 +286,7 @@ mp <- ulam(
         b ~ dcauchy(0,1)
     ), data=list(y=1) , chains=1 )
 
-#' R code 9.29
+#' ## R code 9.29
 #+ R code 9.29
 m5.8s <- ulam(
     alist(
@@ -299,7 +299,7 @@ m5.8s <- ulam(
     ) , data=d, chains=4,
     start=list(a=10,bl=0,br=0.1,sigma=1) )
 
-#' R code 9.30
+#' ## R code 9.30
 #+ R code 9.30
 m5.8s2 <- ulam(
     alist(

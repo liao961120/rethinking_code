@@ -1,7 +1,7 @@
 #+ Setup 
 remotes::install_github('rmcelreath/rethinking', upgrade=F)
 
-#' R code 15.1
+#' ## R code 15.1
 #+ R code 15.1
 # simulate a pancake and return randomly ordered sides
 sim_pancake <- function() {
@@ -20,7 +20,7 @@ num_11_10 <- sum( up==1 )
 num_11 <- sum( up==1 & down==1 )
 num_11/num_11_10
 
-#' R code 15.2
+#' ## R code 15.2
 #+ R code 15.2
 library(rethinking)
 data(WaffleDivorce)
@@ -37,7 +37,7 @@ for ( i in 1:nrow(d) ) {
     lines( c(x,x) , ci )
 }
 
-#' R code 15.3
+#' ## R code 15.3
 #+ R code 15.3
 dlist <- list(
     D_obs = standardize( d$Divorce ),
@@ -58,11 +58,11 @@ m15.1 <- ulam(
         sigma ~ dexp(1)
     ) , data=dlist , chains=4 , cores=4 )
 
-#' R code 15.4
+#' ## R code 15.4
 #+ R code 15.4
 precis( m15.1 , depth=2 )
 
-#' R code 15.5
+#' ## R code 15.5
 #+ R code 15.5
 dlist <- list(
     D_obs = standardize( d$Divorce ),
@@ -86,7 +86,7 @@ m15.2 <- ulam(
         sigma ~ dexp( 1 )
     ) , data=dlist , chains=4 , cores=4 )
 
-#' R code 15.6
+#' ## R code 15.6
 #+ R code 15.6
 post <- extract.samples( m15.2 )
 D_true <- apply( post$D_true , 2 , mean )
@@ -97,7 +97,7 @@ points( M_true , D_true )
 for ( i in 1:nrow(d) )
     lines( c( dlist$M_obs[i] , M_true[i] ) , c( dlist$D_obs[i] , D_true[i] ) )
 
-#' R code 15.7
+#' ## R code 15.7
 #+ R code 15.7
 N <- 500
 A <- rnorm(N)
@@ -105,25 +105,25 @@ M <- rnorm(N,-A)
 D <- rnorm(N,A)
 A_obs <- rnorm(N,A)
 
-#' R code 15.8
+#' ## R code 15.8
 #+ R code 15.8
 N <- 100
 S <- rnorm( N )
 H <- rbinom( N , size=10 , inv_logit(S) )
 
-#' R code 15.9
+#' ## R code 15.9
 #+ R code 15.9
 D <- rbern( N ) # dogs completely random
 Hm <- H
 Hm[D==1] <- NA
 
-#' R code 15.10
+#' ## R code 15.10
 #+ R code 15.10
 D <- ifelse( S > 0 , 1 , 0 )
 Hm <- H
 Hm[D==1] <- NA
 
-#' R code 15.11
+#' ## R code 15.11
 #+ R code 15.11
 set.seed(501)
 N <- 1000
@@ -134,7 +134,7 @@ D <- ifelse( X > 1 , 1 , 0 )
 Hm <- H
 Hm[D==1] <- NA
 
-#' R code 15.12
+#' ## R code 15.12
 #+ R code 15.12
 dat_list <- list(
     H = H,
@@ -149,7 +149,7 @@ m15.3 <- ulam(
     ), data=dat_list , chains=4 )
 precis( m15.3 )
 
-#' R code 15.13
+#' ## R code 15.13
 #+ R code 15.13
 dat_list0 <- list( H = H[D==0] , S = S[D==0] )
 
@@ -162,11 +162,11 @@ m15.4 <- ulam(
     ), data=dat_list0 , chains=4 )
 precis( m15.4 )
 
-#' R code 15.14
+#' ## R code 15.14
 #+ R code 15.14
 D <- ifelse( abs(X) < 1 , 1 , 0 )
 
-#' R code 15.15
+#' ## R code 15.15
 #+ R code 15.15
 N <- 100
 S <- rnorm(N)
@@ -174,7 +174,7 @@ H <- rbinom( N , size=10 , inv_logit(S) )
 D <- ifelse( H < 5 , 1 , 0 )
 Hm <- H; Hm[D==1] <- NA
 
-#' R code 15.16
+#' ## R code 15.16
 #+ R code 15.16
 library(rethinking)
 data(milk)
@@ -186,7 +186,7 @@ dat_list <- list(
     B = standardize( d$neocortex.prop ),
     M = standardize( d$logmass ) )
 
-#' R code 15.17
+#' ## R code 15.17
 #+ R code 15.17
 m15.5 <- ulam(
     alist(
@@ -199,11 +199,11 @@ m15.5 <- ulam(
         sigma ~ dexp( 1 )
     ) , data=dat_list , chains=4 , cores=4 )
 
-#' R code 15.18
+#' ## R code 15.18
 #+ R code 15.18
 precis( m15.5 , depth=2 )
 
-#' R code 15.19
+#' ## R code 15.19
 #+ R code 15.19
 obs_idx <- which( !is.na(d$neocortex.prop) )
 dat_list_obs <- list(
@@ -222,11 +222,11 @@ m15.6 <- ulam(
     ) , data=dat_list_obs , chains=4 , cores=4 )
 precis( m15.6 )
 
-#' R code 15.20
+#' ## R code 15.20
 #+ R code 15.20
 plot( coeftab(m15.5,m15.6) , pars=c("bB","bM") )
 
-#' R code 15.21
+#' ## R code 15.21
 #+ R code 15.21
 post <- extract.samples( m15.5 )
 B_impute_mu <- apply( post$B_impute , 2 , mean )
@@ -247,7 +247,7 @@ Mi <- dat_list$M[miss_idx]
 points( Mi , B_impute_mu )
 for ( i in 1:12 ) lines( rep(Mi[i],2) , B_impute_ci[,i] )
 
-#' R code 15.22
+#' ## R code 15.22
 #+ R code 15.22
 m15.7 <- ulam(
     alist(
@@ -271,20 +271,20 @@ m15.7 <- ulam(
     ) , data=dat_list , chains=4 , cores=4 )
 precis( m15.7 , depth=3 , pars=c("bM","bB","Rho_BM" ) )
 
-#' R code 15.23
+#' ## R code 15.23
 #+ R code 15.23
 B_missidx <- which( is.na( dat_list$B ) )
 
-#' R code 15.24
+#' ## R code 15.24
 #+ R code 15.24
 data(Moralizing_gods)
 str(Moralizing_gods)
 
-#' R code 15.25
+#' ## R code 15.25
 #+ R code 15.25
 table( Moralizing_gods$moralizing_gods , useNA="always" )
 
-#' R code 15.26
+#' ## R code 15.26
 #+ R code 15.26
 symbol <- ifelse( Moralizing_gods$moralizing_gods==1 , 16 , 1 )
 symbol <- ifelse( is.na(Moralizing_gods$moralizing_gods) , 4 , symbol )
@@ -292,18 +292,18 @@ color <- ifelse( is.na(Moralizing_gods$moralizing_gods) , "black" , rangi2 )
 plot( Moralizing_gods$year , Moralizing_gods$population , pch=symbol ,
     col=color , xlab="Time (year)" , ylab="Population size" , lwd=1.5 )
 
-#' R code 15.27
+#' ## R code 15.27
 #+ R code 15.27
 with( Moralizing_gods ,
     table( gods=moralizing_gods , literacy=writing , useNA="always" ) )
 
-#' R code 15.28
+#' ## R code 15.28
 #+ R code 15.28
 haw <- which( Moralizing_gods$polity=="Big Island Hawaii" )
 columns <- c("year","writing","moralizing_gods")
 t( Moralizing_gods[ haw , columns ] )
 
-#' R code 15.29
+#' ## R code 15.29
 #+ R code 15.29
 set.seed(9)
 N_houses <- 100L
@@ -322,7 +322,7 @@ dat <- list(
     RC = R_C,
     N = as.integer(N_houses) )
 
-#' R code 15.30
+#' ## R code 15.30
 #+ R code 15.30
 m15.8 <- ulam(
     alist(
@@ -345,7 +345,7 @@ m15.8 <- ulam(
         k ~ beta(2,2)
     ), data=dat , chains=4 , cores=4 )
 
-#' R code 15.31
+#' ## R code 15.31
 #+ R code 15.31
 m15.9 <- ulam(
     alist(
@@ -369,24 +369,24 @@ m15.9 <- ulam(
         gq> vector[N]:lpC0 <- log(1-k) + poisson_lpmf( notes[i] | exp(a) )
     ), data=dat , chains=4 , cores=4 )
 
-#' R code 15.32
+#' ## R code 15.32
 #+ R code 15.32
 set.seed(100)
 x <- c( rnorm(10) , NA )
 y <- c( rnorm(10,x) , 100 )
 d <- list(x=x,y=y)
 
-#' R code 15.33
+#' ## R code 15.33
 #+ R code 15.33
-#' R code 15.34
+#' ## R code 15.34
 #+ R code 15.34
-#' R code 15.35
+#' ## R code 15.35
 #+ R code 15.35
-#' R code 15.36
+#' ## R code 15.36
 #+ R code 15.36
-#' R code 15.37
+#' ## R code 15.37
 #+ R code 15.37
-#' R code 15.38
+#' ## R code 15.38
 #+ R code 15.38
-#' R code 15.39
+#' ## R code 15.39
 #+ R code 15.39
