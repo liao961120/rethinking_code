@@ -1,12 +1,14 @@
 #+ Setup 
 remotes::install_github('rmcelreath/rethinking', upgrade=F)
 
+#' R code 12.1
 #+ R code 12.1
 pbar <- 0.5
 theta <- 5
 curve( dbeta2(x,pbar,theta) , from=0 , to=1 ,
     xlab="probability" , ylab="Density" )
 
+#' R code 12.2
 #+ R code 12.2
 library(rethinking)
 data(UCBadmit)
@@ -22,11 +24,13 @@ m12.1 <- ulam(
         phi ~ dexp(1)
     ), data=dat , chains=4 )
 
+#' R code 12.3
 #+ R code 12.3
 post <- extract.samples( m12.1 )
 post$da <- post$a[,1] - post$a[,2]
 precis( post , depth=2 )
 
+#' R code 12.4
 #+ R code 12.4
 gid <- 2
 # draw posterior mean beta distribution
@@ -41,9 +45,11 @@ for ( i in 1:50 ) {
 }
 mtext( "distribution of female admission rates" )
 
+#' R code 12.5
 #+ R code 12.5
 postcheck( m12.1 )
 
+#' R code 12.6
 #+ R code 12.6
 library(rethinking)
 data(Kline)
@@ -66,6 +72,7 @@ m12.2 <- ulam(
         phi ~ dexp(1)
     ), data=dat2 , chains=4 , log_lik=TRUE )
 
+#' R code 12.7
 #+ R code 12.7
 # define parameters
 prob_drink <- 0.2 # 20% of days
@@ -81,6 +88,7 @@ drink <- rbinom( N , 1 , prob_drink )
 # simulate manuscripts completed
 y <- (1-drink)*rpois( N , rate_work )
 
+#' R code 12.8
 #+ R code 12.8
 simplehist( y , xlab="manuscripts completed" , lwd=4 )
 zeros_drink <- sum(drink)
@@ -88,6 +96,7 @@ zeros_work <- sum(y==0 & drink==0)
 zeros_total <- sum(y==0)
 lines( c(0,0) , c(zeros_work,zeros_total) , lwd=4 , col=rangi2 )
 
+#' R code 12.9
 #+ R code 12.9
 m12.3 <- ulam(
     alist(
@@ -99,11 +108,13 @@ m12.3 <- ulam(
     ) , data=list(y=y) , chains=4 )
 precis( m12.3 )
 
+#' R code 12.10
 #+ R code 12.10
 post <- extract.samples( m12.3 )
 mean( inv_logit( post$ap ) ) # probability drink
 mean( exp( post$al ) )       # rate finish manuscripts, when not drinking
 
+#' R code 12.11
 #+ R code 12.11
 m12.3_alt <- ulam(
     alist(
@@ -115,14 +126,17 @@ m12.3_alt <- ulam(
         al ~ dnorm(1,0.5)
     ) , data=list(y=as.integer(y)) , chains=4 )
 
+#' R code 12.12
 #+ R code 12.12
 library(rethinking)
 data(Trolley)
 d <- Trolley
 
+#' R code 12.13
 #+ R code 12.13
 simplehist( d$response , xlim=c(1,7) , xlab="response" )
 
+#' R code 12.14
 #+ R code 12.14
 # discrete proportion of each response value
 pr_k <- table( d$response ) / nrow(d)
@@ -134,10 +148,12 @@ cum_pr_k <- cumsum( pr_k )
 plot( 1:7 , cum_pr_k , type="b" , xlab="response" ,
 ylab="cumulative proportion" , ylim=c(0,1) )
 
+#' R code 12.15
 #+ R code 12.15
 logit <- function(x) log(x/(1-x)) # convenience function
 round( lco <- logit( cum_pr_k ) , 2 )
 
+#' R code 12.16
 #+ R code 12.16
 m12.4 <- ulam(
     alist(
@@ -145,6 +161,7 @@ m12.4 <- ulam(
         cutpoints ~ dnorm( 0 , 1.5 )
     ) , data=list( R=d$response ), chains=4 , cores=4 )
 
+#' R code 12.17
 #+ R code 12.17
 m12.4q <- quap(
     alist(
@@ -152,24 +169,31 @@ m12.4q <- quap(
         c(a1,a2,a3,a4,a5,a6) ~ dnorm( 0 , 1.5 )
     ) , data=d , start=list(a1=-2,a2=-1,a3=0,a4=1,a5=2,a6=2.5) )
 
+#' R code 12.18
 #+ R code 12.18
 precis( m12.4 , depth=2 )
 
+#' R code 12.19
 #+ R code 12.19
 round( inv_logit(coef(m12.4)) , 3 )
 
+#' R code 12.20
 #+ R code 12.20
 round( pk <- dordlogit( 1:7 , 0 , coef(m12.4) ) , 2 )
 
+#' R code 12.21
 #+ R code 12.21
 sum( pk*(1:7) )
 
+#' R code 12.22
 #+ R code 12.22
 round( pk <- dordlogit( 1:7 , 0 , coef(m12.4)-0.5 ) , 2 )
 
+#' R code 12.23
 #+ R code 12.23
 sum( pk*(1:7) )
 
+#' R code 12.24
 #+ R code 12.24
 dat <- list(
     R = d$response,
@@ -186,13 +210,16 @@ m12.5 <- ulam(
     ) , data=dat , chains=4 , cores=4 )
 precis( m12.5 )
 
+#' R code 12.25
 #+ R code 12.25
 plot( precis(m12.5) , xlim=c(-1.4,0) )
 
+#' R code 12.26
 #+ R code 12.26
 plot( NULL , type="n" , xlab="intention" , ylab="probability" ,
     xlim=c(0,1) , ylim=c(0,1) , xaxp=c(0,1,1) , yaxp=c(0,1,2) )
 
+#' R code 12.27
 #+ R code 12.27
 kA <- 0     # value for action
 kC <- 0     # value for contact
@@ -200,6 +227,7 @@ kI <- 0:1   # values of intention to calculate over
 pdat <- data.frame(A=kA,C=kC,I=kI)
 phi <- link( m12.5 , data=pdat )$phi
 
+#' R code 12.28
 #+ R code 12.28
 post <- extract.samples( m12.5 )
 for ( s in 1:50 ) {
@@ -207,6 +235,7 @@ for ( s in 1:50 ) {
     for ( i in 1:6 ) lines( kI , pk[,i] , col=grau(0.1) )
 }
 
+#' R code 12.29
 #+ R code 12.29
 kA <- 0     # value for action
 kC <- 1     # value for contact
@@ -215,22 +244,26 @@ pdat <- data.frame(A=kA,C=kC,I=kI)
 s <- sim( m12.5 , data=pdat )
 simplehist( s , xlab="response" )
 
+#' R code 12.30
 #+ R code 12.30
 library(rethinking)
 data(Trolley)
 d <- Trolley
 levels(d$edu)
 
+#' R code 12.31
 #+ R code 12.31
 edu_levels <- c( 6 , 1 , 8 , 4 , 7 , 2 , 5 , 3 )
 d$edu_new <- edu_levels[ d$edu ]
 
+#' R code 12.32
 #+ R code 12.32
 library(gtools)
 set.seed(1805)
 delta <- rdirichlet( 10 , alpha=rep(2,7) )
 str(delta)
 
+#' R code 12.33
 #+ R code 12.33
 h <- 3
 plot( NULL , xlim=c(1,7) , ylim=c(0,0.4) , xlab="index" , ylab="probability" )
@@ -238,6 +271,7 @@ for ( i in 1:nrow(delta) ) lines( 1:7 , delta[i,] , type="b" ,
     pch=ifelse(i==h,16,1) , lwd=ifelse(i==h,4,1.5) ,
     col=ifelse(i==h,"black",col.alpha("black",0.7)) )
 
+#' R code 12.34
 #+ R code 12.34
 dat <- list(
     R = d$response ,
@@ -257,13 +291,16 @@ m12.6 <- ulam(
         simplex[7]: delta ~ dirichlet( alpha )
     ), data=dat , chains=4 , cores=4 )
 
+#' R code 12.35
 #+ R code 12.35
 precis( m12.6 , depth=2 , omit="kappa" )
 
+#' R code 12.36
 #+ R code 12.36
 delta_labels <- c("Elem","MidSch","SHS","HSG","SCol","Bach","Mast","Grad")
 pairs( m12.6 , pars="delta" , labels=delta_labels )
 
+#' R code 12.37
 #+ R code 12.37
 dat$edu_norm <- normalize( d$edu_new )
 m12.7 <- ulam(
@@ -275,6 +312,7 @@ m12.7 <- ulam(
     ), data=dat , chains=4 , cores=4 )
 precis( m12.7 )
 
+#' R code 12.38
 #+ R code 12.38
 library(rethinking)
 data(Hurricanes)

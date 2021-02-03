@@ -40,6 +40,7 @@ for line in code:
             curr_file = f"ch{curr_chap:02}.R"
             append_rscript(SCRIPTS / curr_file, "#+ Setup \nremotes::install_github('rmcelreath/rethinking', upgrade=F)\n\n")
 
+        append_rscript(SCRIPTS / curr_file, line.replace("## R code", "#' R code"))
         append_rscript(SCRIPTS / curr_file, line.replace("## R code", "#+ R code"))
     else:
         append_rscript(SCRIPTS / curr_file, line)

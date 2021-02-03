@@ -1,13 +1,16 @@
 #+ Setup 
 remotes::install_github('rmcelreath/rethinking', upgrade=F)
 
+#' R code 2.1
 #+ R code 2.1
 ways <- c( 0 , 3 , 8 , 9 , 0 )
 ways/sum(ways)
 
+#' R code 2.2
 #+ R code 2.2
 dbinom( 6 , size=9 , prob=0.5 )
 
+#' R code 2.3
 #+ R code 2.3
 # define grid
 p_grid <- seq( from=0 , to=1 , length.out=20 )
@@ -24,15 +27,18 @@ unstd.posterior <- likelihood * prior
 # standardize the posterior, so it sums to 1
 posterior <- unstd.posterior / sum(unstd.posterior)
 
+#' R code 2.4
 #+ R code 2.4
 plot( p_grid , posterior , type="b" ,
     xlab="probability of water" , ylab="posterior probability" )
 mtext( "20 points" )
 
+#' R code 2.5
 #+ R code 2.5
 prior <- ifelse( p_grid < 0.5 , 0 , 1 )
 prior <- exp( -5*abs( p_grid - 0.5 ) )
 
+#' R code 2.6
 #+ R code 2.6
 library(rethinking)
 globe.qa <- quap(
@@ -45,6 +51,7 @@ globe.qa <- quap(
 # display summary of quadratic approximation
 precis( globe.qa )
 
+#' R code 2.7
 #+ R code 2.7
 # analytical calculation
 W <- 6
@@ -53,6 +60,7 @@ curve( dbeta( x , W+1 , L+1 ) , from=0 , to=1 )
 # quadratic approximation
 curve( dnorm( x , 0.67 , 0.16 ) , lty=2 , add=TRUE )
 
+#' R code 2.8
 #+ R code 2.8
 n_samples <- 1000
 p <- rep( NA , n_samples )
@@ -68,6 +76,7 @@ for ( i in 2:n_samples ) {
     p[i] <- ifelse( runif(1) < q1/q0 , p_new , p[i-1] )
 }
 
+#' R code 2.9
 #+ R code 2.9
 dens( p , xlim=c(0,1) )
 curve( dbeta( x , W+1 , L+1 ) , lty=2 , add=TRUE )
