@@ -13,7 +13,7 @@ if os.path.exists(SCRIPTS):
     os.system(f"rm -r {SCRIPTS}")
     SCRIPTS.mkdir()
 
-os.system("wget -O code.R https://raw.githubusercontent.com/rmcelreath/rethinking/master/book_code_boxes.txt")
+#os.system("wget -O code.R https://raw.githubusercontent.com/rmcelreath/rethinking/master/book_code_boxes.txt")
 
 
 with open("code.R") as f:
@@ -38,7 +38,7 @@ for line in code:
         if chap > curr_chap:
             curr_chap = chap
             curr_file = f"ch{curr_chap:02}.R"
-            append_rscript(SCRIPTS / curr_file, "#+ Setup \nremotes::install_github('rmcelreath/rethinking', upgrade=F)\n\n")
+            append_rscript(SCRIPTS / curr_file, "#+ Setup \nremotes::install_github('rmcelreath/rethinking', upgrade=F)\nlibrary(rethinking)\n\n")
 
         append_rscript(SCRIPTS / curr_file, line.replace("## R code", "#' ## R code"))
         append_rscript(SCRIPTS / curr_file, line.replace("## R code", "#+ R code"))

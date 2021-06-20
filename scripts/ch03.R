@@ -1,5 +1,6 @@
 #+ Setup 
 remotes::install_github('rmcelreath/rethinking', upgrade=F)
+library(rethinking)
 
 #' ## R code 3.1
 #+ R code 3.1
